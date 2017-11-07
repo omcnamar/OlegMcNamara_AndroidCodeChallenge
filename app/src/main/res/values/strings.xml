@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">OlegMcNamara_AndroidCodeChallenge</string>
+    <string name="comments">Comments</string>
+    <string name="ups">Ups</string>
+    <string name="downs">Downs</string>
+
+    <string name="comments_message">%1$s Comments</string>
+    <string name="ups_message">%1$s Ups</string>
+    <string name="downs_message">%1$s Downs</string>
+
+</resources>
