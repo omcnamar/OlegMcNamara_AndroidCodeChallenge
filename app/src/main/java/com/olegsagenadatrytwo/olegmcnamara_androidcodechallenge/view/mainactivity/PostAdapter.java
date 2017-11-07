@@ -17,13 +17,14 @@ import com.olegsagenadatrytwo.olegmcnamara_androidcodechallenge.entities.Child;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
     private List<Child> posts = new ArrayList<>();
     private Context context;
 
-    public PostAdapter(List<Child> posts, Context context) {
-        this.posts = posts;
+    public PostAdapter(Context context) {
         this.context = context;
     }
 
@@ -74,6 +75,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             @Override
             public void onClick(View v) {
                 Intent sendIntent = new Intent();
+                sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 sendIntent.setAction(android.content.Intent.ACTION_SEND);
                 String message = "Check out what " + author + " said on Reddit: " +
                         posts.get(position).getData().getTitle();

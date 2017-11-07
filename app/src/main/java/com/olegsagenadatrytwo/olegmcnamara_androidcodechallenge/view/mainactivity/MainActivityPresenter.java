@@ -41,12 +41,6 @@ public class MainActivityPresenter implements MainActivityContract.Presenter, IR
 
     @Override
     public void sendData(final Posts posts) {
-        ((MainActivity)view).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                view.updateUI(posts);
-            }
-        });
-
+        view.updateUI(posts);
     }
 }

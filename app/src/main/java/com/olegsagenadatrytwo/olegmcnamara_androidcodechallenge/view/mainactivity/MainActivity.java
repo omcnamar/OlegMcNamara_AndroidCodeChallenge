@@ -7,14 +7,17 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.olegsagenadatrytwo.olegmcnamara_androidcodechallenge.R;
+import com.olegsagenadatrytwo.olegmcnamara_androidcodechallenge.entities.Child;
 import com.olegsagenadatrytwo.olegmcnamara_androidcodechallenge.entities.Posts;
 import com.olegsagenadatrytwo.olegmcnamara_androidcodechallenge.injection.mainactivity.DaggerMainActivityComponent;
 import com.olegsagenadatrytwo.olegmcnamara_androidcodechallenge.injection.mainactivity.MainActivityModule;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -50,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
         //make the default request
         presenter.makeRestCallForReddit​Post("funny");
+
+        //initialize adapter
+        adapter = new PostAdapter(this);
+
     }
 
     /**
@@ -85,9 +92,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
      */
     @Override
     public void showError(String error) {
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mTvError.getLayoutParams();
-        params.height = 70;
-        mTvError.setLayoutParams(params);
+        mTvError.setVisibility(View.VISIBLE);
         mTvError.setText(error);
     }
 
@@ -95,33 +100,30 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
      * method that is called after data has been downloaded
      */
     @Override
-    public void updateUI(Posts posts) {
+    public void updateUI(final Posts posts) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTvError.setVisibility(View.GONE);
+                    if(posts != null) {
+                        if (posts.getData().getChildren().size() == 0) {
+                            adapter.setPosts(new ArrayList<Child>());
+                            adapter.notifyDataSetChanged();
+                            showError("No Results");
+                        }else {
+                            adapter.setPosts(posts.getData().getChildren());
+                            mRvRecyclerView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }else{
+                        adapter.setPosts(new ArrayList<Child>());
+                        adapter.notifyDataSetChanged();
+                        showError("No results");
+                    }
 
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mTvError.getLayoutParams();
-        params.height = 0;
-        mTvError.setLayoutParams(params);
-        if (adapter == null) {
-            if(posts != null) {
-                adapter = new PostAdapter(posts.getData().getChildren(), getApplicationContext());
-                mRvRecyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-                if (posts.getData().getChildren().size() == 0) {
-                    showError("No Results");
-                }
-            }else{
-                showError("No results");
             }
-        } else {
-            if(posts != null) {
-                adapter.setPosts(posts.getData().getChildren());
-                adapter.notifyDataSetChanged();
-                if (posts.getData().getChildren().size() == 0) {
-                    showError("No Results");
-                }
-            }else{
-                showError("No Results");
-            }
-        }
+        });
+
 
     }
 
